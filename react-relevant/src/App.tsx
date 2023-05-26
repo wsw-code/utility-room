@@ -1,35 +1,61 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, Component, ReactNode } from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
+import './App.css';
+
+
+
+const Child = () => {
+
+  const [num, setNum] = useState<number>(0)
 
   return (
-    <>
+    <div>
+      <button onClick={() => {
+        setNum(pre => pre + 1);
+      }}>改变子数字</button>
       <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        child{num}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+
+    </div>
   )
+}
+
+class App extends Component {
+
+  state = {
+    num: 1,
+    key: 0
+  }
+
+
+
+  render(): ReactNode {
+    console.log(this.state.key)
+    return (
+      <div>
+
+        <button onClick={() => {
+          this.setState({
+            num: ++this.state.num
+          })
+        }}>按钮-num</button>
+        <button onClick={() => {
+          this.setState({
+            key: ++this.state.key
+          })
+        }}>按钮-key</button>
+        <button onClick={() => {
+          this.forceUpdate();
+        }}>强制更新</button>
+        <p>测试{this.state.num}</p>
+        <div data-a={this.state.key}>
+          <Child />
+        </div>
+
+      </div>
+    )
+  }
 }
 
 export default App
