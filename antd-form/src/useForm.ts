@@ -96,7 +96,6 @@ export class FormStore {
     validateFields: this.validateFields,
     submit: this.submit,
     _init: true,
-
     getInternalHooks: this.getInternalHooks,
   });
 
@@ -870,6 +869,7 @@ export class FormStore {
 
     this.getFieldEntities(true).forEach((field: FieldEntity) => {
       // Add field if not provide `nameList`
+      // debugger;
       if (!provideNameList) {
         namePathList.push(field.getNamePath());
       }
@@ -897,6 +897,7 @@ export class FormStore {
       const fieldNamePath = field.getNamePath();
       // Add field validate rule in to promise list
       if (!provideNameList || containsNamePath(namePathList, fieldNamePath)) {
+        console.log('options = ', options);
         const promise = field.validateRules({
           validateMessages: {
             ...defaultValidateMessages,

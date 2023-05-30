@@ -51,19 +51,19 @@ export default () => {
           <Input placeholder="Username" />
         </Field>
 
-        <Field name="text" >
+        {/* <Field name="text" >
           <Text />
         </Field>
 
 
         <Field name="desc" initialValue={'描述'} >
           <Input placeholder="desc" />
-        </Field>
+        </Field> */}
 
-        <Field name="age" dependencies={['name', 'desc']} initialValue={1}>
+        <Field name="age" dependencies={['name', 'desc']} initialValue={1} rules={[{ required: true }]}>
           <InputNumber />
         </Field>
-        <Field name="adress" dependencies={['name', 'desc']} initialValue={'广州市'}>
+        <Field name="adress" dependencies={['name', 'desc']} initialValue={'广州市'} rules={[{ required: true }]}>
           <Input />
         </Field>
         <Field name="hobby" dependencies={['age']}   >

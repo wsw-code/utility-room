@@ -371,6 +371,7 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
   };
 
   public validateRules = (options?: InternalValidateOptions): Promise<RuleError[]> => {
+
     // We should fixed namePath & value to avoid developer change then by form function
     const namePath = this.getNamePath();
     const currentValue = this.getValue();
@@ -399,6 +400,7 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
           });
       }
 
+      debugger
       const promise = validateRules(
         namePath,
         currentValue,

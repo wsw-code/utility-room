@@ -55,7 +55,6 @@ const Form: React.ForwardRefRenderFunction<FormInstance, FormProps> = (
 ) => {
   const formContext: FormContextProps = React.useContext(FormContext);
 
-  console.log('formContext', formContext)
 
 
   // We customize handle event since Context will makes all the consumer re-render:
@@ -87,7 +86,7 @@ const Form: React.ForwardRefRenderFunction<FormInstance, FormProps> = (
     ...validateMessages,
   });
 
-  console.log('form????')
+
 
   setCallbacks({
     onValuesChange,

@@ -67,6 +67,7 @@ async function validateRule(
     [name]: [cloneRule],
   });
 
+  /**合并对象 */
   const messages = setValues({}, defaultValidateMessages, options.validateMessages);
   validator.messages(messages);
 
@@ -127,6 +128,7 @@ export function validateRules(
   validateFirst: boolean | 'parallel',
   messageVariables?: Record<string, string>,
 ) {
+  debugger;
   const name = namePath.join('.');
 
   // Fill rule with context
