@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import './App.css';
+
+import { useState } from 'react';
 
 const useCustomHooks = () => {
 
@@ -11,9 +11,11 @@ const useCustomHooks = () => {
   }
 }
 
-const App = () => {
+const Child = () => {
+
   const [num, setNum] = useState<number>(0)
   const { count, setCount } = useCustomHooks()
+
   return (
     <div>
       <button onClick={() => {
@@ -22,15 +24,16 @@ const App = () => {
 
       <button onClick={() => {
         setCount(pre => pre + 1);
-      }}>改变hooks数字11</button>
+      }}>改变hooks数字</button>
       <div>
         child{num}
       </div>
       <div>
-        hooks---{count}
+        hooks{count}
       </div>
     </div>
   )
 }
 
-export default App
+
+export default Child

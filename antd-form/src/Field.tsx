@@ -233,7 +233,7 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
     const { shouldUpdate, dependencies = [], onReset } = this.props;
     const { store } = info;
     const namePath = this.getNamePath();
-    console.log(namePath, namePathList)
+    // console.log(namePath, namePathList)
     const prevValue = this.getValue(prevStore);
     const curValue = this.getValue(store);
     // debugger
@@ -324,18 +324,18 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
          */
         const dependencyList = dependencies.map(getNamePath);
 
-        console.log('dependencyList = ', dependencyList)
+        // console.log('dependencyList = ', dependencyList)
 
-        console.log('relatedFields = ', info.relatedFields);
-        // debugger
+        // console.log('relatedFields = ', info.relatedFields);
+        // // debugger
 
-        console.log(dependencyList.some(dependency => containsNamePath(info.relatedFields, dependency)))
+        // console.log(dependencyList.some(dependency => containsNamePath(info.relatedFields, dependency)))
 
         // No need for `namePathMath` check and `shouldUpdate` check, since `valueUpdate` will be
         // emitted earlier and they will work there
         // If set it may cause unnecessary twice rerendering
         if (dependencyList.some(dependency => containsNamePath(info.relatedFields, dependency))) {
-          console.log(this.getNamePath() + '-dependenciesUpdate渲染')
+          // console.log(this.getNamePath() + '-dependenciesUpdate渲染')
           this.reRender();
           return;
         }
@@ -353,6 +353,10 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
         //       is not provided
         //   2.2 If `shouldUpdate` provided, use customize logic to update the field
         //       else to check if value changed
+
+        // console.log('type = ', info.type, namePathMatch ||
+        //   ((!dependencies.length || namePath.length || shouldUpdate) &&
+        //     requireUpdate(shouldUpdate, prevStore, store, prevValue, curValue, info)))
 
         if (
           namePathMatch ||
@@ -400,7 +404,7 @@ class Field extends React.Component<InternalFieldProps, FieldState> implements F
           });
       }
 
-      debugger
+      // debugger
       const promise = validateRules(
         namePath,
         currentValue,

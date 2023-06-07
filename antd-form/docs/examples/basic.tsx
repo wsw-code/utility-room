@@ -1,4 +1,5 @@
 import Form, { Field, FormProvider } from 'rc-field-form';
+import type { ValidateErrorEntity } from 'rc-field-form/es/interface'
 import React from 'react';
 
 
@@ -46,7 +47,10 @@ export default () => {
           age: 30
         })
       }}>更新值</Button>
-      <Form form={form} preserve={false}>
+
+      <Form form={form} preserve={false} onFinishFailed={(val: ValidateErrorEntity) => {
+        console.log(val)
+      }}>
         <Field name="name" dependencies={['desc']}>
           <Input placeholder="Username" />
         </Field>
@@ -60,7 +64,7 @@ export default () => {
           <Input placeholder="desc" />
         </Field> */}
 
-        <Field name="age" dependencies={['name', 'desc']} initialValue={1} rules={[{ required: true }]}>
+        <Field name="age" dependencies={['name', 'desc']} initialValue={1} rules={[{ required: true, type: 'number', min: 0, max: 10 }]}>
           <InputNumber />
         </Field>
         <Field name="adress" dependencies={['name', 'desc']} initialValue={'广州市'} rules={[{ required: true }]}>
@@ -69,7 +73,7 @@ export default () => {
         <Field name="hobby" dependencies={['age']}   >
           <Input />
         </Field>
-
+        <Button htmlType="submit" >提交</Button>
       </Form>
 
     </>

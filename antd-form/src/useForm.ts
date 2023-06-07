@@ -700,6 +700,7 @@ export class FormStore {
   private triggerDependenciesUpdate = (prevStore: Store, namePath: InternalNamePath) => {
     const childrenFields = this.getDependencyChildrenFields(namePath);
 
+    /**对相关依赖进行验证 */
     if (childrenFields.length) {
       this.validateFields(childrenFields);
     }
@@ -734,7 +735,7 @@ export class FormStore {
       const changedValues = cloneByNamePathList(this.store, [namePath]);
       onValuesChange(changedValues, this.getFieldsValue());
     }
-    console.log([namePath, ...childrenFields]);
+    // console.log([namePath, ...childrenFields]);
     this.triggerOnFieldsChange([namePath, ...childrenFields]);
   };
 
@@ -897,7 +898,7 @@ export class FormStore {
       const fieldNamePath = field.getNamePath();
       // Add field validate rule in to promise list
       if (!provideNameList || containsNamePath(namePathList, fieldNamePath)) {
-        console.log('options = ', options);
+        // console.log('options = ', options);
         const promise = field.validateRules({
           validateMessages: {
             ...defaultValidateMessages,
@@ -943,6 +944,7 @@ export class FormStore {
     const summaryPromise = allPromiseFinish(promiseList);
     this.lastValidatePromise = summaryPromise;
 
+    // console.log('summaryPromise1', summaryPromise);
     // Notify fields with rule that validate has finished and need update
     summaryPromise
       .catch(results => results)
@@ -954,6 +956,8 @@ export class FormStore {
         this.triggerOnFieldsChange(resultNamePathList, results);
       });
 
+    // console.log('summaryPromise2', summaryPromise);
+
     const returnPromise: Promise<Store | ValidateErrorEntity | string[]> = summaryPromise
       .then((): Promise<Store | string[]> => {
         if (this.lastValidatePromise === summaryPromise) {
@@ -962,6 +966,8 @@ export class FormStore {
         return Promise.reject<string[]>([]);
       })
       .catch((results: { name: InternalNamePath; errors: string[] }[]) => {
+        console.log('outOfDate=', this.lastValidatePromise !== summaryPromise);
+
         const errorList = results.filter(result => result && result.errors.length);
         return Promise.reject({
           values: this.getFieldsValue(namePathList),
