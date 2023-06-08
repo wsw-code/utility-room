@@ -238,7 +238,7 @@ export default function viteReact(opts: Options = {}): PluginOption[] {
         parserPlugins.push('typescript')
       }
 
-      console.log('code',code)
+
       const result = await babel.transformAsync(code, {
         ...babelOptions,
         root: projectRoot,

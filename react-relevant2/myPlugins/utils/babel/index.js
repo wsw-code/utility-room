@@ -48,6 +48,9 @@ export default function (babel, opts = {}) {
 
   function findInnerComponents(inferredName, path, callback) {
     const node = path.node;
+
+    const s = path.toString();
+
     switch (node.type) {
       case 'Identifier': {
         if (!isComponentishName(node.name)) {
@@ -87,11 +90,13 @@ export default function (babel, opts = {}) {
           return false;
         }
         const calleePath = path.get('callee');
+        const c1 = calleePath.toString();
         switch (calleePath.node.type) {
           case 'MemberExpression':
           case 'Identifier': {
             const calleeSource = calleePath.getSource();
             const firstArgPath = argsPath[0];
+            const f = firstArgPath.toString()
             const innerName = inferredName + '$' + calleeSource;
             const foundInside = findInnerComponents(
               innerName,
@@ -103,6 +108,7 @@ export default function (babel, opts = {}) {
             }
             // const Foo = hoc1(hoc2(() => {}))
             // export default memo(React.forwardRef(function() {}))
+            const b = path.toString();
             callback(inferredName, node, path);
             return true;
           }
@@ -432,8 +438,13 @@ export default function (babel, opts = {}) {
     visitor: {
       ExportDefaultDeclaration(path) {
         const node = path.node;
+        // console.log()
+
+        const test = path.toString()
+
         const decl = node.declaration;
         const declPath = path.get('declaration');
+        const tetst11 = declPath.toString()
         if (decl.type !== 'CallExpression') {
           // For now, we only support possible HOC calls here.
           // Named function declarations are handled in FunctionDeclaration.
@@ -458,10 +469,14 @@ export default function (babel, opts = {}) {
         // export default memo(function Named() {})
         const inferredName = '%default%';
         const programPath = path.parentPath;
+        const tetst1 = programPath.toString()
         findInnerComponents(
           inferredName,
           declPath,
           (persistentID, targetExpr, targetPath) => {
+            const s = targetExpr.body.toString();
+           
+
             if (targetPath === null) {
               // For case like:
               // export default hoc(Foo)
@@ -473,6 +488,7 @@ export default function (babel, opts = {}) {
             targetPath.replaceWith(
               t.assignmentExpression('=', handle, targetExpr),
             );
+            const s3 = targetPath.toString()
           },
         );
       },
