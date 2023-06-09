@@ -49,7 +49,7 @@ export default function (babel, opts = {}) {
   function findInnerComponents(inferredName, path, callback) {
     const node = path.node;
 
-    const s = path.toString();
+
 
     switch (node.type) {
       case 'Identifier': {
@@ -250,8 +250,12 @@ export default function (babel, opts = {}) {
     if (fnHookCalls === undefined) {
       return null;
     }
+
+
+    // name = hooks名称 如 useState/useReducer
+    // key = '[num, setNum](0)' 结构值+(初始值)
     return {
-      key: fnHookCalls.map(call => call.name + '{' + call.key + '}').join('\n'),
+      key: fnHookCalls.map(call => call.name + '{' + call.key + '}').join('\n'), // useState{[num, setNum](0)}
       customHooks: fnHookCalls
         .filter(call => !isBuiltinHook(call.name))
         .map(call => t.cloneDeep(call.callee)),
@@ -382,7 +386,12 @@ export default function (babel, opts = {}) {
   const HookCallsVisitor = {
     CallExpression(path) {
       const node = path.node;
+
+      const s = path.toString();
+
       const callee = node.callee;
+
+    
 
       // Note: this visitor MUST NOT mutate the tree in any way.
       // It runs early in a separate traversal and should be very fast.
@@ -400,12 +409,17 @@ export default function (babel, opts = {}) {
         return;
       }
       const fnScope = path.scope.getFunctionParent();
+
+      const s2 = fnScope.path.toString();
       if (fnScope === null) {
         return;
       }
 
       // This is a Hook call. Record it.
       const fnNode = fnScope.block;
+
+      const isRight = fnNode === fnScope.path.node
+
       if (!hookCalls.has(fnNode)) {
         hookCalls.set(fnNode, []);
       }
@@ -413,7 +427,11 @@ export default function (babel, opts = {}) {
       let key = '';
       if (path.parent.type === 'VariableDeclarator') {
         // TODO: if there is no LHS, consider some other heuristic.
+        const p = path.parentPath.toString();
+        const p2 = path.parentPath.parentPath.toString();
         key = path.parentPath.get('id').getSource();
+        const key1 = path.parentPath.get('id').toString()
+        console.log(key1)
       }
 
       // Some built-in Hooks reset on edits to arguments.
@@ -437,6 +455,7 @@ export default function (babel, opts = {}) {
   return {
     visitor: {
       ExportDefaultDeclaration(path) {
+        console.log(1)
         const node = path.node;
         // console.log()
 
@@ -469,12 +488,11 @@ export default function (babel, opts = {}) {
         // export default memo(function Named() {})
         const inferredName = '%default%';
         const programPath = path.parentPath;
-        const tetst1 = programPath.toString()
         findInnerComponents(
           inferredName,
           declPath,
           (persistentID, targetExpr, targetPath) => {
-            const s = targetExpr.body.toString();
+    
            
 
             if (targetPath === null) {
@@ -488,12 +506,12 @@ export default function (babel, opts = {}) {
             targetPath.replaceWith(
               t.assignmentExpression('=', handle, targetExpr),
             );
-            const s3 = targetPath.toString()
           },
         );
       },
       FunctionDeclaration: {
         enter(path) {
+          console.log(2)
           const node = path.node;
           let programPath;
           let insertAfterPath;
@@ -637,7 +655,9 @@ export default function (babel, opts = {}) {
       },
       'ArrowFunctionExpression|FunctionExpression': {
         exit(path) {
+          console.log(3)
           const node = path.node;
+          const s = path.parentPath.parentPath.parentPath.parentPath.parentPath.toString()
           const signature = getHookCallsSignature(node);
           if (signature === null) {
             return;
@@ -652,6 +672,9 @@ export default function (babel, opts = {}) {
           // Don't mutate the tree above this point.
 
           const sigCallID = path.scope.generateUidIdentifier('_s');
+          console.log(path.scope.parent.path.toString())
+     
+
           path.scope.parent.push({
             id: sigCallID,
             init: t.callExpression(refreshSig, []),
@@ -719,7 +742,10 @@ export default function (babel, opts = {}) {
         },
       },
       VariableDeclaration(path) {
+        console.log(4)
         const node = path.node;
+        const s = path.toString();
+        const s1 = path.parent.toString()
         let programPath;
         let insertAfterPath;
         let modulePrefix = '';
@@ -819,10 +845,13 @@ export default function (babel, opts = {}) {
       },
       Program: {
         enter(path) {
+          console.log('first',0)
           // This is a separate early visitor because we need to collect Hook calls
           // and "const [foo, setFoo] = ..." signatures before the destructuring
           // transform mangles them. This extra traversal is not ideal for perf,
           // but it's the best we can do until we stop transpiling destructuring.
+          console.log()
+          const s = path.toString()
           path.traverse(HookCallsVisitor);
         },
         exit(path) {
