@@ -1,16 +1,27 @@
-import { useState } from 'react'
-import { Provider } from './react-redux';
+import { useSelector, useDispatch } from './react-redux';
+import { Button } from 'antd'
 import './App.css';
 
 
-console.log(Provider);
+
 
 function App() {
-
+  const dispatch = useDispatch();
+  const { count } = useSelector((state: any) => ({ count: state.count }))
 
   return (
     <div>
-      我是一个页面
+      <div>
+        <Button type="primary" onClick={() => {
+          dispatch({ type: 'incremented' })
+        }}>新增</Button>
+        <Button
+          onClick={() => {
+            dispatch({ type: 'decremented' })
+          }}
+        >减少</Button>
+      </div>
+      我是一个页面{count}
     </div>
   )
 }
