@@ -8,23 +8,22 @@ const composeEnhancer = (window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose)
 // const a = composeEnhancer()
 
 
-function logger({ getState }) {
-  return next => action => {
-    console.log('will dispatch', action)
+const logger1 = ({ getState }) => (next) => (action) => {
+  console.log('before dispatch1', action)
+  const returnValue = next(action)
+  console.log('after dispatch1', 'getState()获取store')
+  return returnValue
+}
 
-    // 调用 middleware 链中下一个 middleware 的 dispatch。
-    const returnValue = next(action)
-
-    console.log('state after dispatch', getState())
-
-    // 一般会是 action 本身，除非
-    // 后面的 middleware 修改了它。
-    return returnValue
-  }
+const logger2 = ({ getState }) => (next) => (action) => {
+  console.log('before dispatch2', action)
+  const returnValue = next(action)
+  console.log('after dispatch2', 'getState()获取store')
+  return returnValue
 }
 
 
-const store = createStore(counter, null, applyMiddleware(logger))
+const store = createStore(counter, null, applyMiddleware(logger1, logger2))
 
 
 store.subscribe(() => {
