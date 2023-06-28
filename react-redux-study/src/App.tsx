@@ -12,9 +12,11 @@ function App() {
   return (
     <div>
       <div>
-        <Button type="primary" onClick={() => {
-          dispatch({ type: 'incremented' })
-        }}>新增</Button>
+        <Button type="primary"
+          onClick={() => {
+            dispatch({ type: 'incremented' })
+          }}
+        >新增</Button>
         <Button
           onClick={() => {
             dispatch({ type: 'decremented' })

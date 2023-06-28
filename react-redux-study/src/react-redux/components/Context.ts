@@ -4,6 +4,7 @@ import type { Action, AnyAction, Store } from 'redux'
 import type { Subscription } from '../utils/Subscription'
 import type { CheckFrequency } from '../hooks/useSelector'
 
+
 export interface ReactReduxContextValue<
   SS = any,
   A extends Action = AnyAction
@@ -37,6 +38,8 @@ export const ReactReduxContext = /*#__PURE__*/ new Proxy(
     {
       get(_, handler) {
         const target = getContext()
+        // console.log('_',_);
+        console.log('hander',handler)
         // @ts-ignore
         return (_target, ...args) => Reflect[handler](target, ...args)
       },
