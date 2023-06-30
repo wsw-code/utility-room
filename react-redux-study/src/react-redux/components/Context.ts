@@ -39,7 +39,7 @@ export const ReactReduxContext = /*#__PURE__*/ new Proxy(
       get(_, handler) {
         const target = getContext()
         // console.log('_',_);
-        console.log('hander',handler)
+        console.log('target',target)
         // @ts-ignore
         return (_target, ...args) => Reflect[handler](target, ...args)
       },

@@ -7,7 +7,8 @@ import reducer from './reducer'
 import './index.css'
 
 
-const store = legacy_createStore(reducer)
+const store = legacy_createStore(reducer);
+console.log(store);
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>

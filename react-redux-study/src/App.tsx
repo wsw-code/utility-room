@@ -12,7 +12,8 @@ function App() {
   return (
     <div>
       <div>
-        <Button type="primary"
+        <Button
+          type="primary"
           onClick={() => {
             dispatch({ type: 'incremented' })
           }}
@@ -23,7 +24,9 @@ function App() {
           }}
         >减少</Button>
       </div>
-      我是一个页面{count}
+      <div>
+        我是一个页面{count}
+      </div>
     </div>
   )
 }
