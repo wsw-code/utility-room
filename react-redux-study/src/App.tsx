@@ -7,7 +7,7 @@ import './App.css';
 
 function App() {
   const dispatch = useDispatch();
-  const { count } = useSelector((state: any) => ({ count: state.count }))
+  const { count, count2 } = useSelector((state: any) => ({ count: state.count, count2: state.count2 }))
 
   return (
     <div>
@@ -25,7 +25,7 @@ function App() {
         >减少</Button>
       </div>
       <div>
-        我是一个页面{count}
+        我是一个页面{count}-{count2}
       </div>
     </div>
   )
