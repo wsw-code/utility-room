@@ -4,7 +4,20 @@ import Tear from './components/Tear'
 import Effect from './components/Effect'
 import ClassElement from './components/ClassElement';
 import FunctionName from './components/FunctionName'
-import ExternalStore from './components/ExternalStore'
+// import ExternalStore from './components/ExternalStore'
+import Zustand from './components/Zustand';
+import Jotai from './components/Jotai'
+
+import { create } from 'zustand'
+
+
+
+
+
+
+
+
+
 
 const App = () => {
 
@@ -21,7 +34,9 @@ const App = () => {
       {/* <Tear /> */}
       {/* <ClassElement /> */}
       {/* <FunctionName callback={fn} /> */}
-      <ExternalStore />
+      {/* <ExternalStore /> */}
+      {/* <Zustand /> */}
+      <Jotai />
     </div>
   )
 }
