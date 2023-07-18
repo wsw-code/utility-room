@@ -7,12 +7,12 @@ import FunctionName from './components/FunctionName'
 // import ExternalStore from './components/ExternalStore'
 import Zustand from './components/Zustand';
 import Jotai from './components/Jotai'
-
-import { create } from 'zustand'
-
+import JotaiStudy from './components/JotaiStudy'
 
 
 
+
+import { DevTools } from 'jotai-devtools'
 
 
 
@@ -36,7 +36,9 @@ const App = () => {
       {/* <FunctionName callback={fn} /> */}
       {/* <ExternalStore /> */}
       {/* <Zustand /> */}
-      <Jotai />
+      {/* <Jotai /> */}
+      <DevTools />
+      <JotaiStudy />
     </div>
   )
 }
