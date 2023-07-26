@@ -56,14 +56,17 @@ function Provider<A extends Action = AnyAction, S = unknown>({
   const previousState = useMemo(() => store.getState(), [store])
 
   useIsomorphicLayoutEffect(() => {
+
     const { subscription } = contextValue
     subscription.onStateChange = subscription.notifyNestedSubs
     subscription.trySubscribe()
 
     if (previousState !== store.getState()) {
+      console.log('走到这里？')
       subscription.notifyNestedSubs()
     }
     return () => {
+      console.log('解除？')
       subscription.tryUnsubscribe()
       subscription.onStateChange = undefined
     }

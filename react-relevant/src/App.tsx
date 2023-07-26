@@ -8,7 +8,7 @@ import FunctionName from './components/FunctionName'
 import Zustand from './components/Zustand';
 import Jotai from './components/Jotai'
 import JotaiStudy from './components/JotaiStudy'
-
+import UseMemoEffect from './components/UseMemoEffect'
 
 
 
@@ -37,8 +37,9 @@ const App = () => {
       {/* <ExternalStore /> */}
       {/* <Zustand /> */}
       {/* <Jotai /> */}
-      <DevTools />
-      <JotaiStudy />
+      {/* <DevTools /> */}
+      {/* <JotaiStudy /> */}
+      <UseMemoEffect />
     </div>
   )
 }

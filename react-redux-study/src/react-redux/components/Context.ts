@@ -6,6 +6,7 @@ import type { CheckFrequency } from '../hooks/useSelector'
 
 
 export interface ReactReduxContextValue<
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   SS = any,
   A extends Action = AnyAction
 > {
@@ -38,8 +39,7 @@ export const ReactReduxContext = /*#__PURE__*/ new Proxy(
     {
       get(_, handler) {
         const target = getContext()
-        // console.log('_',_);
-        console.log('target',target)
+
         // @ts-ignore
         return (_target, ...args) => Reflect[handler](target, ...args)
       },
