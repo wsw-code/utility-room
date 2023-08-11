@@ -1,34 +1,15 @@
-import { useReducer } from 'react'
-
-
-
-const reducer = (state: any, action: any) => {
-
-  if (action.type === 'add') {
-    return {
-      ...state,
-      count: state.count + 1
-    }
-  }
-  return state
-}
+import Demo1 from './demo/demo1';
+import Demo2 from './demo/demo2';
+import Demo3 from './demo/demo3';
+import Demo4 from './demo/demo4';
+import Demo5 from './demo/demo5';
+// 
 
 function App() {
-  const [{ count }, dispatch] = useReducer(reducer, { count: 0 }, (data) => {
-    console.log(data)
-    return data
-  })
 
   return (
     <div>
-      <div>
-        <button onClick={() => {
-          dispatch({ type: 'add', })
-        }} >更改数据</button>
-      </div>
-      <div>
-        {count}
-      </div>
+      <Demo5 />
     </div>
   )
 }
