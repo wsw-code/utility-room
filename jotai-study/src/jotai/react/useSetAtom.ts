@@ -35,6 +35,7 @@ export function useSetAtom<Value, Args extends any[], Result>(
         // so we should check here.
         throw new Error('not writable atom')
       }
+
       return store.set(atom, ...args)
     },
     [store, atom]

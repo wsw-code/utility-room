@@ -174,15 +174,15 @@ export const createStore = () => {
     const prevAtomState = atomStateMap.get(atom)
     atomStateMap.set(atom, atomState)
 
-  
-
+    
+    console.log('pendingMap',!pendingMap.has(atom))
     if (!pendingMap.has(atom)) {
       pendingMap.set(atom, prevAtomState)
     }
 
 
-    console.log('atomStateMap',atomStateMap)
-    console.log('pendingMap',pendingMap);
+    // console.log('atomStateMap',atomStateMap)
+    // console.log('pendingMap',pendingMap);
 
     if (prevAtomState && hasPromiseAtomValue(prevAtomState)) {
       const next =
@@ -203,11 +203,14 @@ export const createStore = () => {
     const dependencies: Dependencies = new Map()
     let changed = false
     nextDependencies.forEach((aState, a) => {
+      console.log(!aState && a === atom)
       if (!aState && a === atom) {
         aState = nextAtomState
       }
       if (aState) {
         dependencies.set(a, aState)
+
+
         if (nextAtomState.d.get(a) !== aState) {
           changed = true
         }
@@ -227,13 +230,16 @@ export const createStore = () => {
   ): AtomState<Value> => {
     
     const prevAtomState = getAtomState(atom)
+    console.log('prevAtomState',prevAtomState)
     const nextAtomState: AtomState<Value> = {
       d: prevAtomState?.d || new Map(),
       v: value,
     }
+
     if (nextDependencies) {
       updateDependencies(atom, nextAtomState, nextDependencies)
     }
+    console.log('nextAtomState',nextAtomState)
     if (
       prevAtomState &&
       isEqualAtomValue(prevAtomState, nextAtomState) &&
@@ -256,6 +262,10 @@ export const createStore = () => {
         nextAtomState.v = prevAtomState.v
       }
     }
+
+
+
+
     setAtomState(atom, nextAtomState)
     return nextAtomState
   }
@@ -362,6 +372,7 @@ export const createStore = () => {
   ): AtomState<Value> => {
     // See if we can skip recomputing this atom.
     const atomState = getAtomState(atom)
+    console.log('获取')
     if (!force && atomState) {
       // If the atom is mounted, we can use the cache.
       // because it should have been updated by dependencies.
@@ -382,8 +393,11 @@ export const createStore = () => {
     const nextDependencies: NextDependencies = new Map()
     let isSync = true
     const getter: Getter = <V>(a: Atom<V>) => {
+
       if ((a as AnyAtom) === atom) {
+    
         const aState = getAtomState(a)
+        
         if (aState) {
           nextDependencies.set(a, aState)
           return returnAtomValue(aState)
@@ -530,6 +544,8 @@ export const createStore = () => {
           throw new Error('atom not writable')
         }
         const prevAtomState = getAtomState(a)
+        console.log('///sdsd')
+        console.log(a, args[0])
         const nextAtomState = setAtomValueOrPromise(a, args[0] as V)
         if (!prevAtomState || !isEqualAtomValue(prevAtomState, nextAtomState)) {
           recomputeDependents(a)
@@ -547,6 +563,7 @@ export const createStore = () => {
       }
       return r as R
     }
+    console.log('args',args)
     const result = atom.write(getter, setter, ...args)
     isSync = false
     return result
@@ -571,8 +588,10 @@ export const createStore = () => {
     initialDependent?: AnyAtom
   ): Mounted => {
     // mount dependencies before mounting self
+
     getAtomState(atom)?.d.forEach((_, a) => {
       const aMounted = mountedMap.get(a)
+      
       if (aMounted) {
         aMounted.t.add(atom) // add dependent
       } else {
@@ -673,10 +692,13 @@ export const createStore = () => {
     if (import.meta.env?.MODE !== 'production') {
       flushed = new Set()
     }
+
+   
     while (pendingMap.size) {
       const pending = Array.from(pendingMap)
       pendingMap.clear()
       pending.forEach(([atom, prevAtomState]) => {
+        
         const atomState = getAtomState(atom)
         if (atomState) {
           if (atomState.d !== prevAtomState?.d) {
