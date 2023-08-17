@@ -65,8 +65,7 @@ export function useAtomValue<Value>(atom: Atom<Value>, options?: Options) {
       undefined
     >(
       (prev) => {
-        const nextValue = store.get(atom)
-        console.log('nextValue',nextValue)
+        const nextValue = store.get(atom);
         if (
           Object.is(prev[0], nextValue) &&
           prev[1] === store &&

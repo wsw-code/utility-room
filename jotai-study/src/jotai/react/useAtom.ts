@@ -17,6 +17,9 @@ export function useAtom<Value, Args extends any[], Result>(
   options?: Options
 ): [Awaited<Value>, SetAtom<Args, Result>]
 
+
+
+
 export function useAtom<Value>(
   atom: Atom<Value>,
   options?: Options

@@ -163,6 +163,13 @@ export const createStore = () => {
   const getAtomState = <Value>(atom: Atom<Value>) =>
     atomStateMap.get(atom) as AtomState<Value> | undefined
 
+  /**
+   * 
+   * 使用pendingMap保存旧值 Map {atom:atomState}
+   * 使用atomStateMap保存新值 Map {atom:atomState}
+   * @param atom 
+   * @param atomState 
+   */
   const setAtomState = <Value>(
     atom: Atom<Value>,
     atomState: AtomState<Value>
@@ -171,18 +178,13 @@ export const createStore = () => {
     if (import.meta.env?.MODE !== 'production') {
       Object.freeze(atomState)
     }
+
     const prevAtomState = atomStateMap.get(atom)
     atomStateMap.set(atom, atomState)
 
-    
-    console.log('pendingMap',!pendingMap.has(atom))
     if (!pendingMap.has(atom)) {
       pendingMap.set(atom, prevAtomState)
     }
-
-
-    // console.log('atomStateMap',atomStateMap)
-    // console.log('pendingMap',pendingMap);
 
     if (prevAtomState && hasPromiseAtomValue(prevAtomState)) {
       const next =
@@ -223,6 +225,7 @@ export const createStore = () => {
     }
   }
 
+
   const setAtomValue = <Value>(
     atom: Atom<Value>,
     value: Value,
@@ -230,7 +233,6 @@ export const createStore = () => {
   ): AtomState<Value> => {
     
     const prevAtomState = getAtomState(atom)
-    console.log('prevAtomState',prevAtomState)
     const nextAtomState: AtomState<Value> = {
       d: prevAtomState?.d || new Map(),
       v: value,
@@ -239,7 +241,7 @@ export const createStore = () => {
     if (nextDependencies) {
       updateDependencies(atom, nextAtomState, nextDependencies)
     }
-    console.log('nextAtomState',nextAtomState)
+
     if (
       prevAtomState &&
       isEqualAtomValue(prevAtomState, nextAtomState) &&
@@ -262,9 +264,6 @@ export const createStore = () => {
         nextAtomState.v = prevAtomState.v
       }
     }
-
-
-
 
     setAtomState(atom, nextAtomState)
     return nextAtomState
@@ -371,8 +370,9 @@ export const createStore = () => {
     force?: boolean
   ): AtomState<Value> => {
     // See if we can skip recomputing this atom.
-    const atomState = getAtomState(atom)
-    console.log('获取')
+    const atomState = getAtomState(atom);
+
+
     if (!force && atomState) {
       // If the atom is mounted, we can use the cache.
       // because it should have been updated by dependencies.
@@ -393,9 +393,10 @@ export const createStore = () => {
     const nextDependencies: NextDependencies = new Map()
     let isSync = true
     const getter: Getter = <V>(a: Atom<V>) => {
-
+      /**
+       * 不相等为依赖 atom
+       */
       if ((a as AnyAtom) === atom) {
-    
         const aState = getAtomState(a)
         
         if (aState) {
@@ -410,10 +411,14 @@ export const createStore = () => {
         throw new Error('no atom init')
       }
       // a !== atom
-      const aState = readAtomState(a)
+      const aState = readAtomState(a);
+      console.log('a = ',a,aState)
       nextDependencies.set(a, aState)
       return returnAtomValue(aState)
     }
+
+  
+
     let controller: AbortController | undefined
     let setSelf: ((...args: unknown[]) => unknown) | undefined
     const options = {
@@ -444,7 +449,8 @@ export const createStore = () => {
       },
     }
     try {
-      const valueOrPromise = atom.read(getter, options as any)
+      const valueOrPromise = atom.read(getter, options as any);
+      // console.log('nextDependencies',nextDependencies)
       return setAtomValueOrPromise(
         atom,
         valueOrPromise,
@@ -543,9 +549,7 @@ export const createStore = () => {
           // NOTE technically possible but restricted as it may cause bugs
           throw new Error('atom not writable')
         }
-        const prevAtomState = getAtomState(a)
-        console.log('///sdsd')
-        console.log(a, args[0])
+        const prevAtomState = getAtomState(a);
         const nextAtomState = setAtomValueOrPromise(a, args[0] as V)
         if (!prevAtomState || !isEqualAtomValue(prevAtomState, nextAtomState)) {
           recomputeDependents(a)
@@ -563,7 +567,7 @@ export const createStore = () => {
       }
       return r as R
     }
-    console.log('args',args)
+    
     const result = atom.write(getter, setter, ...args)
     isSync = false
     return result
@@ -573,7 +577,8 @@ export const createStore = () => {
     atom: WritableAtom<Value, Args, Result>,
     ...args: Args
   ): Result => {
-    const result = writeAtomState(atom, ...args)
+    const result = writeAtomState(atom, ...args);
+
     const flushed = flushPending()
     if (import.meta.env?.MODE !== 'production') {
       storeListenersRev2.forEach((l) =>
@@ -588,10 +593,9 @@ export const createStore = () => {
     initialDependent?: AnyAtom
   ): Mounted => {
     // mount dependencies before mounting self
-
+ 
     getAtomState(atom)?.d.forEach((_, a) => {
       const aMounted = mountedMap.get(a)
-      
       if (aMounted) {
         aMounted.t.add(atom) // add dependent
       } else {
@@ -601,7 +605,7 @@ export const createStore = () => {
       }
     })
     // recompute atom state
-    readAtomState(atom)
+    readAtomState(atom);
     // mount self
     const mounted: Mounted = {
       t: new Set(initialDependent && [initialDependent]),
@@ -692,7 +696,6 @@ export const createStore = () => {
     if (import.meta.env?.MODE !== 'production') {
       flushed = new Set()
     }
-
    
     while (pendingMap.size) {
       const pending = Array.from(pendingMap)
@@ -718,6 +721,7 @@ export const createStore = () => {
               )
             )
           ) {
+        
             mounted.l.forEach((listener) => listener())
             if (import.meta.env?.MODE !== 'production') {
               flushed.add(atom)
