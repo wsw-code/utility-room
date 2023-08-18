@@ -15,9 +15,9 @@ const depAtom = atom((get) => { return get(dataAtom).num + get(dataAtom).count }
 
 
 const Child = () => {
-
-  const [data, setData] = useAtom(dataAtom);
   const [total] = useAtom(depAtom);
+  const [data, setData] = useAtom(dataAtom);
+
 
   return (
     <div>

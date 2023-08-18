@@ -92,6 +92,13 @@ const isEqualPromiseAtomValue = <Value>(
   b: AtomState<Promise<Value> & PromiseMeta<Value>>
 ) => 'v' in a && 'v' in b && a.v.orig && a.v.orig === b.v.orig
 
+
+
+/**
+ * 返回 atomState.v
+ * @param atomState 
+ * @returns 
+ */
 const returnAtomValue = <Value>(atomState: AtomState<Value>): Value => {
   if ('e' in atomState) {
     throw atomState.e
@@ -205,14 +212,12 @@ export const createStore = () => {
     const dependencies: Dependencies = new Map()
     let changed = false
     nextDependencies.forEach((aState, a) => {
-      console.log(!aState && a === atom)
+    
       if (!aState && a === atom) {
         aState = nextAtomState
       }
       if (aState) {
-        dependencies.set(a, aState)
-
-
+        dependencies.set(a, aState);
         if (nextAtomState.d.get(a) !== aState) {
           changed = true
         }
@@ -220,6 +225,7 @@ export const createStore = () => {
         console.warn('[Bug] atom state not found')
       }
     })
+
     if (changed || nextAtomState.d.size !== dependencies.size) {
       nextAtomState.d = dependencies
     }
@@ -231,7 +237,7 @@ export const createStore = () => {
     value: Value,
     nextDependencies?: NextDependencies
   ): AtomState<Value> => {
-    
+ 
     const prevAtomState = getAtomState(atom)
     const nextAtomState: AtomState<Value> = {
       d: prevAtomState?.d || new Map(),
@@ -239,6 +245,7 @@ export const createStore = () => {
     }
 
     if (nextDependencies) {
+      console.log('t',atom, nextAtomState, nextDependencies)
       updateDependencies(atom, nextAtomState, nextDependencies)
     }
 
@@ -372,10 +379,10 @@ export const createStore = () => {
     // See if we can skip recomputing this atom.
     const atomState = getAtomState(atom);
 
-
     if (!force && atomState) {
       // If the atom is mounted, we can use the cache.
       // because it should have been updated by dependencies.
+
       if (mountedMap.has(atom)) {
         return atomState
       }
@@ -397,8 +404,7 @@ export const createStore = () => {
        * 不相等为依赖 atom
        */
       if ((a as AnyAtom) === atom) {
-        const aState = getAtomState(a)
-        
+        const aState = getAtomState(a);
         if (aState) {
           nextDependencies.set(a, aState)
           return returnAtomValue(aState)
@@ -412,7 +418,6 @@ export const createStore = () => {
       }
       // a !== atom
       const aState = readAtomState(a);
-      console.log('a = ',a,aState)
       nextDependencies.set(a, aState)
       return returnAtomValue(aState)
     }
@@ -450,7 +455,8 @@ export const createStore = () => {
     }
     try {
       const valueOrPromise = atom.read(getter, options as any);
-      // console.log('nextDependencies',nextDependencies)
+      console.log('nextDependencies = ',nextDependencies);
+
       return setAtomValueOrPromise(
         atom,
         valueOrPromise,
@@ -463,6 +469,7 @@ export const createStore = () => {
       isSync = false
     }
   }
+
 
   const readAtom = <Value>(atom: Atom<Value>): Value =>
     returnAtomValue(readAtomState(atom))
@@ -721,7 +728,6 @@ export const createStore = () => {
               )
             )
           ) {
-        
             mounted.l.forEach((listener) => listener())
             if (import.meta.env?.MODE !== 'production') {
               flushed.add(atom)
